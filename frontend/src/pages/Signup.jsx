@@ -20,7 +20,7 @@ const Signup = () => {
 
 
     try{
-      const response = await api.post('/auth/signup', formData)
+      const response =await api.post('/auth/signup', formData)
       setMsg(response.data.message)
     }
     catch(err){
