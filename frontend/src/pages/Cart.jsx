@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
+import { useNavigate } from 'react-router';
 
 const Cart = () => {
     const usrId = localStorage.getItem("userId"); 
     const [cart, setCart] = useState(null);
     const [loading, setLoading] = useState(true); // Loading bug fix karne ke liye
+
+    const navigate = useNavigate();
 
     const loadCart = async () => {
         if (!usrId) {
@@ -120,6 +123,10 @@ const Cart = () => {
                         <span>Total</span>
                         <span className="text-green-600">₹{total}</span>
                     </div>
+                    <button
+                    onClick={() => navigate("/checkout-address")} className='w-full bg-blue-500 text-white p-2 rounded'>
+                        Proceed to Checkout
+                    </button>
                 </>
             )}
         </div>

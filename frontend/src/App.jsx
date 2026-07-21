@@ -8,6 +8,9 @@ import EditProduct from "./admin/EditProduct";
 import ProductList from "./admin/ProductList";
 import Layout from "./Layout";
 import Cart from "./pages/Cart";
+import CheckoutAddress from "./pages/CheckoutAddress";
+import Checkout from "./pages/Checkout";
+import OrderSuccess from './pages/OrderSuccess'
 
 
 const router = createBrowserRouter([
@@ -22,6 +25,9 @@ const router = createBrowserRouter([
       { path: "/admin/products/add", element: <AddProduct /> },
       { path: "/admin/products/:id/edit/", element: <EditProduct /> },
       { path: "/cart", element: <Cart /> },
+      { path: "/checkout-address", element: <CheckoutAddress/> },
+      { path: "/checkout", element: <Checkout/> },
+      { path: '/order-success/:id', element: <OrderSuccess/> }
     ]
       
   }
