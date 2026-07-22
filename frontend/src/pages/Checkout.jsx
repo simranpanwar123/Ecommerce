@@ -1,221 +1,297 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 export default function Checkout() {
-    const userId = localStorage.getItem("userId");
-    const [cart, setCart] = useState(null);
-    const [address, setAddress] = useState([]);
-    const [ selectAddress, setSelectAddress] = useState(null)
 
-    const navigate = useNavigate();
+  const userId = localStorage.getItem("userId");
 
-    useEffect(() => {
-      if(!userId){
-        navigate("/")
-         return;
-      }
-        api.get(`/cart/${userId}`)
-            .then((response) => {
-                setCart(response.data);
-            });
-        api.get(`/address/${userId}`)
-            .then((response) => {
-                console.log(response.data);
-                setAddress(response.data);
-                setSelectAddress(response.data[0])
-            });
-    }, [userId]);
+  const [cart, setCart] = useState(null);
+  const [address, setAddress] = useState([]);
+  const [selectAddress, setSelectAddress] = useState(null);
 
-    if (!cart || !address) {
-        return <div>Loading...</div>;
-    }
+  const navigate = useNavigate();
 
-    const total = cart.items.reduce((sum, item) => sum + item.productId.price * item.quantity, 0);
 
-    const placeOrder = async () => {
-      if(!selectAddress){
-        alert("please select an address")
-        return
-      }
+  useEffect(() => {
 
-      const res = await api.post("/order/place",{
-        userId,
-        addressId: selectAddress._id
-      })
+    if (!userId) {
+      navigate("/");
+      return;
     }
 
 
-    return (
- <div className="min-h-screen bg-gray-100 py-10">
-    <div className="max-w-7xl mx-auto px-4 lg:px-8">
+    const fetchData = async () => {
 
-      <h1 className="text-4xl font-bold mb-8 text-gray-800">
-        Checkout
-      </h1>
+      try {
 
-      <div className="grid lg:grid-cols-3 gap-8">
+        const cartResponse = await api.get(`/cart/${userId}`);
+        setCart(cartResponse.data);
 
-        {/* LEFT SECTION */}
 
-        <div className="lg:col-span-2 space-y-6">
+        const addressResponse = await api.get(`/address/${userId}`);
 
-          {/* Address Card */}
+        setAddress(addressResponse.data);
 
-          <div className="bg-white rounded-2xl shadow-md p-6">
 
-            <div className="flex justify-between items-center mb-5">
+        if(addressResponse.data.length > 0){
+          setSelectAddress(addressResponse.data[0]);
+        }
 
-              <h2 className="text-2xl font-semibold">
-                Delivery Address
-              </h2>
 
-              <button className="text-blue-600 font-semibold hover:underline">
-                Change
-              </button>
+      } catch(error) {
 
-            </div>
+        console.log(error.response?.data || error.message);
 
-            <div className="border rounded-xl p-5 bg-gray-50">
+      }
 
-              <h3 className="text-lg font-bold">
-                {address.fullName}
-              </h3>
+    };
 
-              <p className="text-gray-600 mt-2">
-                {address.phone}
-              </p>
 
-              <p className="text-gray-700 mt-2 leading-7">
-                {address.addressLine}
-                <br />
-                {address.city}, {address.state}
-                <br />
-                {address.pincode}
-              </p>
+    fetchData();
 
-            </div>
 
-          </div>
+  }, [userId, navigate]);
 
-          {/* Order Items */}
 
-          <div className="bg-white rounded-2xl shadow-md p-6">
 
-            <h2 className="text-2xl font-semibold mb-5">
-              Order Items
-            </h2>
+  if (!cart) {
+    return <div className="text-center mt-10">Loading...</div>;
+  }
 
-            <div className="space-y-5">
 
-              {cart.items.map((item) => (
 
-                <div
-                  key={item.productId._id}
-                  className="flex items-center justify-between border-b pb-5"
-                >
+  const total = cart.items.reduce(
+    (sum, item) =>
+      sum + item.productId.price * item.quantity,
+    0
+  );
 
-                  <div className="flex items-center gap-5">
+const placeOrder = async () => {
 
-                    <img
-                      src={item.productId.image}
-                      alt={item.productId.title}
-                      className="w-24 h-24 object-contain border rounded-lg p-2"
-                    />
+    if (!selectAddress) {
+        alert("Please select an address");
+        return;
+    }
 
-                    <div>
+    try {
 
-                      <h3 className="font-semibold text-lg">
-                        {item.productId.title}
-                      </h3>
+        const res = await api.post("/order/place", {
+            userId,
+            address: selectAddress
+        });
 
-                      <p className="text-gray-500 mt-2">
-                        Quantity : {item.quantity}
-                      </p>
+        localStorage.setItem("cartCount", 0);
 
-                    </div>
+        window.dispatchEvent(new Event("cartUpdated"));
 
-                  </div>
+        alert("Order Placed Successfully");
 
-                  <div className="text-right">
+        navigate(`/order-success/${res.data.order._id}`);
 
-                    <p className="text-xl font-bold text-green-600">
-                      ₹{item.productId.price * item.quantity}
-                    </p>
+    } catch (error) {
 
-                  </div>
+        console.log(error.response?.data || error.message);
 
-                </div>
+    }
 
-              ))}
+};
 
-            </div>
+ 
 
-          </div>
 
-        </div>
 
-        {/* RIGHT SECTION */}
+  return (
 
-        <div>
+<div className="min-h-screen bg-gray-100 py-10">
 
-          <div className="bg-white rounded-2xl shadow-md p-6 sticky top-5">
+<div className="max-w-7xl mx-auto px-4">
 
-            <h2 className="text-2xl font-semibold mb-6">
-              Price Details
-            </h2>
+<h1 className="text-4xl font-bold mb-8">
+Checkout
+</h1>
 
-            <div className="space-y-4">
 
-              <div className="flex justify-between">
+<div className="grid lg:grid-cols-3 gap-8">
 
-                <span>Items</span>
 
-                <span>{cart.items.length}</span>
+{/* LEFT */}
 
-              </div>
+<div className="lg:col-span-2">
 
-              <div className="flex justify-between">
 
-                <span>Subtotal</span>
+<div className="bg-white rounded-xl p-6 shadow">
 
-                <span>₹{total}</span>
 
-              </div>
+<h2 className="text-2xl font-semibold mb-5">
+Delivery Address
+</h2>
 
-              <div className="flex justify-between text-green-600">
 
-                <span>Shipping</span>
+{
+address.map((addr)=>(
 
-                <span>FREE</span>
+<label
+key={addr._id}
+className="flex gap-3 border p-4 rounded-lg mb-3 cursor-pointer"
+>
 
-              </div>
 
-              <hr />
+<input
 
-              <div className="flex justify-between text-2xl font-bold">
+type="radio"
 
-                <span>Total</span>
+name="address"
 
-                <span>₹{total}</span>
+checked={
+selectAddress?._id === addr._id
+}
 
-              </div>
+onChange={()=>
+setSelectAddress(addr)
+}
 
-            </div>
+/>
 
-            <button onClick={placeOrder}
-              className="mt-8 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 rounded-xl transition"
-            >
-              Place Order (Cash on Delivery)
-            </button>
 
-          </div>
+<div>
 
-        </div>
+<h3 className="font-bold">
+{addr.fullName}
+</h3>
 
-      </div>
 
-    </div>
-  </div>
-);
+<p>
+{addr.phone}
+</p>
+
+
+<p>
+{addr.addressLine}
+<br/>
+{addr.city}, {addr.state}
+<br/>
+{addr.pincode}
+</p>
+
+
+</div>
+
+
+</label>
+
+))
+}
+
+
+</div>
+
+
+
+<div className="bg-white rounded-xl p-6 shadow mt-6">
+
+
+<h2 className="text-2xl font-semibold mb-5">
+Order Items
+</h2>
+
+
+{
+cart.items.map((item)=>(
+
+<div
+key={item.productId._id}
+className="flex justify-between border-b py-4"
+>
+
+
+<div>
+
+<h3 className="font-semibold">
+{item.productId.title}
+</h3>
+
+
+<p>
+Quantity : {item.quantity}
+</p>
+
+</div>
+
+
+<p className="font-bold">
+₹{item.productId.price * item.quantity}
+</p>
+
+
+</div>
+
+
+))
+}
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+{/* RIGHT */}
+
+<div>
+
+<div className="bg-white rounded-xl p-6 shadow">
+
+
+<h2 className="text-2xl font-semibold">
+Price Details
+</h2>
+
+
+<div className="flex justify-between mt-5">
+<span>Items</span>
+<span>{cart.items.length}</span>
+</div>
+
+
+<div className="flex justify-between mt-3">
+<span>Total</span>
+<span>₹{total}</span>
+</div>
+
+
+
+<button
+
+onClick={placeOrder}
+
+className="mt-8 w-full bg-green-600 text-white py-3 rounded-lg"
+
+>
+
+Place Order (COD)
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+  );
 }

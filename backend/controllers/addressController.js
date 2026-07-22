@@ -1,11 +1,17 @@
 import Address from "../models/Address.js";
 
+
+// Add Address
 export const saveAddress = async (req, res) => {
-    try{
+    try {
         const address = await Address.create(req.body);
-        res.json({ message: "Address saved successfully", address }); 
-    }
-    catch (error) {
+
+        res.status(201).json({
+            message: "Address saved successfully",
+            address
+        });
+
+    } catch (error) {
         res.status(500).json({
             message: "Server error",
             error: error.message
@@ -13,19 +19,32 @@ export const saveAddress = async (req, res) => {
     }
 };
 
+
+// Get User Addresses
 export const getAddress = async (req, res) => {
-    try{
+    try {
         const { userId } = req.params;
-        const address = await Address.findOne({ userId });
-        if (!address) {
-            return res.status(404).json({ message: "Address not found" });
+
+        const addresses = await Address.find({ userId })
+            .sort({ createdAt: -1 });
+
+
+        if (!addresses.length) {
+            return res.status(404).json({
+                message: "No address found"
+            });
         }
-        res.json(address);
-    }
-    catch (error) {
+
+
+        res.status(200).json(addresses);
+
+
+    } catch (error) {
+
         res.status(500).json({
             message: "Server error",
             error: error.message
         });
+
     }
 };

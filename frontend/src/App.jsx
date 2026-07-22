@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -10,7 +10,9 @@ import Layout from "./Layout";
 import Cart from "./pages/Cart";
 import CheckoutAddress from "./pages/CheckoutAddress";
 import Checkout from "./pages/Checkout";
-import OrderSuccess from './pages/OrderSuccess'
+import OrderSuccess from './pages/OrderSuccess';
+import Orders from "./pages/Orders";
+
 
 
 const router = createBrowserRouter([
@@ -25,11 +27,14 @@ const router = createBrowserRouter([
       { path: "/admin/products/add", element: <AddProduct /> },
       { path: "/admin/products/:id/edit/", element: <EditProduct /> },
       { path: "/cart", element: <Cart /> },
-      { path: "/checkout-address", element: <CheckoutAddress/> },
-      { path: "/checkout", element: <Checkout/> },
-      { path: '/order-success/:id', element: <OrderSuccess/> }
-    ]
+      { path: "/checkout-address", element: <CheckoutAddress /> },
+      { path: "/checkout", element: <Checkout /> },
+      { path: "/orders",element: <Orders /> },
+      { path: '/order-success/:id', element: <OrderSuccess /> },
       
+     
+    ]
+
   }
 
 ]);

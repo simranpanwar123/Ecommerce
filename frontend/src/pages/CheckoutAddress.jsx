@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+
 import {
   User,
   Phone,
@@ -8,213 +9,524 @@ import {
   Building2,
   Landmark,
   Hash,
+  CheckCircle
 } from "lucide-react";
 
-export default function CheckoutAddress() {
-  const userId = localStorage.getItem("userId");
-  const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    fullName: "",
-    phone: "",
-    addressLine: "",
-    city: "",
-    state: "",
-    pincode: "",
-  });
+export default function CheckoutAddress(){
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
 
-  const saveAddress = async (e) => {
-    e.preventDefault();
+const userId = localStorage.getItem("userId");
 
-    try {
-      await api.post("/address/add", {
-        ...form,
-        userId,
-      });
+const navigate = useNavigate();
 
-      navigate("/checkout");
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
-  return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-6">
 
-      <div className="bg-white shadow-xl rounded-2xl w-full max-w-4xl overflow-hidden">
+const [form,setForm]=useState({
 
-        {/* Header */}
+fullName:"",
+phone:"",
+addressLine:"",
+city:"",
+state:"",
+pincode:""
 
-        <div className="bg-blue-600 text-white p-6">
-          <h1 className="text-3xl font-bold">
-            Delivery Address
-          </h1>
-          <p className="text-blue-100 mt-1">
-            Please enter your shipping details.
-          </p>
-        </div>
+});
 
-        <form
-          onSubmit={saveAddress}
-          className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
 
-          {/* Full Name */}
 
-          <div>
-            <label className="font-medium mb-2 block">
-              Full Name
-            </label>
 
-            <div className="flex items-center border rounded-lg px-3">
-              <User className="text-gray-400 w-5 h-5" />
 
-              <input
-                type="text"
-                name="fullName"
-                value={form.fullName}
-                onChange={handleChange}
-                placeholder="Enter Full Name"
-                className="w-full p-3 outline-none"
-                required
-              />
-            </div>
-          </div>
+const handleChange=(e)=>{
 
-          {/* Phone */}
+setForm({
 
-          <div>
-            <label className="font-medium mb-2 block">
-              Phone Number
-            </label>
+...form,
 
-            <div className="flex items-center border rounded-lg px-3">
-              <Phone className="text-gray-400 w-5 h-5" />
+[e.target.name]:e.target.value
 
-              <input
-                type="text"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                placeholder="Enter Phone Number"
-                className="w-full p-3 outline-none"
-                required
-              />
-            </div>
-          </div>
+});
 
-          {/* Address */}
+};
 
-          <div className="md:col-span-2">
-            <label className="font-medium mb-2 block">
-              Address
-            </label>
 
-            <div className="flex items-center border rounded-lg px-3">
-              <MapPin className="text-gray-400 w-5 h-5" />
 
-              <textarea
-                rows="3"
-                name="addressLine"
-                value={form.addressLine}
-                onChange={handleChange}
-                placeholder="House No, Street, Area"
-                className="w-full p-3 outline-none resize-none"
-                required
-              />
-            </div>
-          </div>
 
-          {/* City */}
 
-          <div>
-            <label className="font-medium mb-2 block">
-              City
-            </label>
 
-            <div className="flex items-center border rounded-lg px-3">
-              <Building2 className="text-gray-400 w-5 h-5" />
 
-              <input
-                type="text"
-                name="city"
-                value={form.city}
-                onChange={handleChange}
-                placeholder="City"
-                className="w-full p-3 outline-none"
-                required
-              />
-            </div>
-          </div>
+const saveAddress=async(e)=>{
 
-          {/* State */}
+e.preventDefault();
 
-          <div>
-            <label className="font-medium mb-2 block">
-              State
-            </label>
 
-            <div className="flex items-center border rounded-lg px-3">
-              <Landmark className="text-gray-400 w-5 h-5" />
+try{
 
-              <input
-                type="text"
-                name="state"
-                value={form.state}
-                onChange={handleChange}
-                placeholder="State"
-                className="w-full p-3 outline-none"
-                required
-              />
-            </div>
-          </div>
 
-          {/* Pincode */}
+await api.post("/address/add",{
 
-          <div>
-            <label className="font-medium mb-2 block">
-              Pincode
-            </label>
+...form,
 
-            <div className="flex items-center border rounded-lg px-3">
-              <Hash className="text-gray-400 w-5 h-5" />
+userId
 
-              <input
-                type="text"
-                name="pincode"
-                value={form.pincode}
-                onChange={handleChange}
-                placeholder="Pincode"
-                className="w-full p-3 outline-none"
-                required
-              />
-            </div>
-          </div>
+});
 
-          {/* Button */}
 
-          <div className="md:col-span-2 mt-4">
+navigate("/checkout");
 
-            <button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 transition text-white font-semibold py-4 rounded-xl text-lg shadow-lg"
-            >
-              Save & Continue
-            </button>
 
-          </div>
+}
 
-        </form>
+catch(error){
 
-      </div>
+console.log(error);
 
-    </div>
-  );
+}
+
+
+};
+
+
+
+
+
+
+
+const Input = ({
+icon:Icon,
+label,
+name,
+placeholder
+})=>(
+
+
+<div>
+
+
+<label className="
+block
+font-semibold
+mb-2
+text-gray-700
+">
+
+{label}
+
+</label>
+
+
+<div className="
+flex
+items-center
+gap-3
+border
+rounded-xl
+px-4
+bg-gray-50
+focus-within:ring-2
+focus-within:ring-green-500
+">
+
+
+<Icon
+size={20}
+className="text-gray-400"
+/>
+
+
+<input
+
+type="text"
+
+name={name}
+
+value={form[name]}
+
+onChange={handleChange}
+
+placeholder={placeholder}
+
+className="
+w-full
+bg-transparent
+py-3
+outline-none
+"
+
+/>
+
+
+</div>
+
+
+</div>
+
+
+);
+
+
+
+
+
+
+
+
+return (
+
+<div className="
+min-h-screen
+bg-gray-100
+py-10
+px-5
+">
+
+
+
+<div className="
+max-w-5xl
+mx-auto
+bg-white
+rounded-3xl
+shadow-xl
+overflow-hidden
+">
+
+
+
+
+
+{/* TOP HEADER */}
+
+
+
+<div className="
+bg-gray-950
+text-white
+p-8
+">
+
+
+<h1 className="
+text-3xl
+font-bold
+">
+
+Delivery Address
+
+</h1>
+
+
+<p className="
+text-gray-400
+mt-2
+">
+
+Where should we deliver your order?
+
+</p>
+
+
+
+
+
+{/* STEPS */}
+
+
+<div className="
+flex
+items-center
+gap-5
+mt-8
+text-sm
+">
+
+
+<div className="
+flex
+items-center
+gap-2
+text-green-400
+">
+
+<CheckCircle size={20}/>
+
+Cart
+
+</div>
+
+
+
+<div className="h-px bg-gray-600 flex-1"></div>
+
+
+
+
+<div className="
+flex
+items-center
+gap-2
+text-green-400
+">
+
+<CheckCircle size={20}/>
+
+Address
+
+</div>
+
+
+
+
+<div className="h-px bg-gray-600 flex-1"></div>
+
+
+
+
+<div className="text-gray-400">
+
+Payment
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<form
+
+onSubmit={saveAddress}
+
+className="
+p-8
+grid
+md:grid-cols-2
+gap-6
+"
+
+>
+
+
+
+
+
+<Input
+
+icon={User}
+
+label="Full Name"
+
+name="fullName"
+
+placeholder="Enter your full name"
+
+/>
+
+
+
+
+
+<Input
+
+icon={Phone}
+
+label="Mobile Number"
+
+name="phone"
+
+placeholder="Enter mobile number"
+
+/>
+
+
+
+
+
+
+
+<div className="
+md:col-span-2
+">
+
+
+<label className="
+block
+font-semibold
+mb-2
+text-gray-700
+">
+
+Complete Address
+
+</label>
+
+
+
+<div className="
+flex
+gap-3
+border
+rounded-xl
+px-4
+bg-gray-50
+focus-within:ring-2
+focus-within:ring-green-500
+">
+
+
+<MapPin
+className="text-gray-400 mt-3"
+/>
+
+
+<textarea
+
+name="addressLine"
+
+value={form.addressLine}
+
+onChange={handleChange}
+
+placeholder="House no, street, area"
+
+rows="3"
+
+className="
+w-full
+bg-transparent
+py-3
+outline-none
+resize-none
+"
+
+/>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<Input
+
+icon={Building2}
+
+label="City"
+
+name="city"
+
+placeholder="Enter city"
+
+/>
+
+
+
+
+
+<Input
+
+icon={Landmark}
+
+label="State"
+
+name="state"
+
+placeholder="Enter state"
+
+/>
+
+
+
+
+
+<Input
+
+icon={Hash}
+
+label="Pincode"
+
+name="pincode"
+
+placeholder="Enter pincode"
+
+/>
+
+
+
+
+
+
+
+
+<div className="
+md:col-span-2
+mt-5
+">
+
+
+<button
+
+className="
+w-full
+bg-green-600
+hover:bg-green-700
+text-white
+py-4
+rounded-xl
+font-bold
+text-lg
+transition
+shadow-lg
+"
+
+>
+
+Save Address & Continue
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+</form>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+);
+
+
 }
