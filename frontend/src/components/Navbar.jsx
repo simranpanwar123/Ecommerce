@@ -125,7 +125,7 @@ gap-1
 
 <ShoppingCart size={22}/>
 
-Cart
+
 
 
 {
