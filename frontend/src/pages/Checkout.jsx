@@ -76,7 +76,7 @@ const placeOrder = async () => {
 
     try {
 
-        const res = await api.post("/order/place", {
+        const res = await api.post("/order/place-order", {
             userId,
             address: selectAddress
         });
